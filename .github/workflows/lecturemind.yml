@@ -20,8 +20,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Oldest supported toolchain (Xcode 15.x on macos-14) through the newest images.
-        os: [macos-14, macos-15, macos-26, macos-27]
+        # Oldest supported toolchain (Xcode 15.x on macos-14) through the newest image.
+        # Add macos-27 once GitHub offers it: an unknown label queues forever instead of failing.
+        os: [macos-14, macos-15, macos-26]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     defaults:
