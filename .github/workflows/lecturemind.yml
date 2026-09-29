@@ -20,8 +20,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # macos-14 ships Xcode 15.x (Swift 5.10), macos-15 ships Xcode 16.x (Swift 6).
-        os: [macos-14, macos-15]
+        # Oldest supported toolchain (Xcode 15.x on macos-14) through the newest images.
+        os: [macos-14, macos-15, macos-26, macos-27]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     defaults:
