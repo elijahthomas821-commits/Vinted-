@@ -71,9 +71,14 @@ jobs:
           lipo "$APP/Contents/MacOS/LectureMind" -verify_arch arm64 x86_64
           codesign --verify --deep --strict --verbose=2 "$APP"
           codesign -dv "$APP" 2>&1 | grep -E "Signature|flags"
-          for key in CFBundleShortVersionString CFBundleVersion LSUIElement LSMinimumSystemVersion NSScreenCaptureUsageDescription; do
+          for key in CFBundleShortVersionString CFBundleVersion LSUIElement LSMinimumSystemVersion NSScreenCaptureUsageDescription CFBundleIconName; do
             echo "$key: $(/usr/libexec/PlistBuddy -c "Print :$key" "$APP/Contents/Info.plist")"
           done
+          # The app icon must be compiled into the bundle and referenced from Info.plist.
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIconName' "$APP/Contents/Info.plist")" = AppIcon
+          test -s "$APP/Contents/Resources/AppIcon.icns"
+          test -s "$APP/Contents/Resources/Assets.car"
+          ls -la "$APP/Contents/Resources"
 
       - name: Zip app
         # ditto keeps the code signature and bundle metadata intact.

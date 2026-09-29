@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0" stop-color="#8B7CFF"/>
+      <stop offset="1" stop-color="#4338CA"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.22"/>
+      <stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="wave" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6D5DFC"/>
+      <stop offset="1" stop-color="#A855F7"/>
+    </linearGradient>
+    <linearGradient id="spark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FDE68A"/>
+      <stop offset="1" stop-color="#F59E0B"/>
+    </linearGradient>
+    <filter id="iconShadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#000000" flood-opacity="0.28"/>
+    </filter>
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#1E1B4B" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- macOS icon body: 824pt rounded square centred on the 1024pt canvas -->
+  <g filter="url(#iconShadow)">
+    <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#bg)"/>
+  </g>
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#sheen)"/>
+
+  <!-- note card -->
+  <rect x="262" y="232" width="500" height="580" rx="64" fill="#FFFFFF" filter="url(#cardShadow)"/>
+
+  <!-- waveform -->
+  <g fill="url(#wave)">
+    <rect x="327" y="375" width="34" height="70"  rx="17"/>
+    <rect x="383" y="340" width="34" height="140" rx="17"/>
+    <rect x="439" y="305" width="34" height="210" rx="17"/>
+    <rect x="495" y="280" width="34" height="260" rx="17"/>
+    <rect x="551" y="320" width="34" height="180" rx="17"/>
+    <rect x="607" y="350" width="34" height="120" rx="17"/>
+    <rect x="663" y="380" width="34" height="60"  rx="17"/>
+  </g>
+
+  <!-- note lines -->
+  <g fill="#D9D6F5">
+    <rect x="318" y="592" width="388" height="28" rx="14"/>
+    <rect x="318" y="650" width="330" height="28" rx="14"/>
+    <rect x="318" y="708" width="236" height="28" rx="14"/>
+  </g>
+
+  <!-- AI sparkle -->
+  <path d="M752 158 Q752 246 840 246 Q752 246 752 334 Q752 246 664 246 Q752 246 752 158 Z"
+        fill="url(#spark)" stroke="#FFFFFF" stroke-width="10" stroke-linejoin="round"/>
+</svg>
