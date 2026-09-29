@@ -201,7 +201,7 @@ final class FakeNoteGenerator: NoteGeneratorServiceProtocol, @unchecked Sendable
     private let failure: Error?
     private var recordedRequests: [NoteRequest] = []
 
-    init(fragments: [String] = ["# Sorting Algorithms\n\n", "## Executive Summary\n", "Covered quicksort."], failure: Error? = nil) {
+    convenience init(fragments: [String] = ["# Sorting Algorithms\n\n", "## Executive Summary\n", "Covered quicksort."], failure: Error? = nil) {
         self.init(updates: fragments.map(NoteGenerationUpdate.text), failure: failure)
     }
 
