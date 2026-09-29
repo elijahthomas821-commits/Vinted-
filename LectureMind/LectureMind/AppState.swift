@@ -164,7 +164,10 @@ final class AppState: ObservableObject {
         let chunks: AsyncStream<AudioChunk>
         do {
             chunks = try await capture.start { [weak self] event in
-                Task { @MainActor in self?.handle(event) }
+                // Rebind as a constant: Swift 5.10 rejects reading the weak (var) capture
+                // from inside the nested, concurrently-executing Task.
+                guard let self else { return }
+                Task { @MainActor in self.handle(event) }
             }
         } catch {
             if let captureError = error as? AudioCaptureError, case .permissionDenied = captureError {
