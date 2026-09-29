@@ -6,6 +6,20 @@ import UniformTypeIdentifiers
 enum SettingsKeys {
     static let claudeModel = "claudeModel"
     static let transcriptionLanguage = "transcriptionLanguage"
+    static let transcriptionEngine = "transcriptionEngine"
+    static let noteEngine = "noteEngine"
+}
+
+struct TranscriberConfiguration: Equatable {
+    let engine: TranscriptionEngine
+    let apiKey: String?
+    let language: String?
+}
+
+struct NoteGeneratorConfiguration: Equatable {
+    let engine: NoteEngine
+    let apiKey: String?
+    let model: String
 }
 
 /// Rolling history of input levels for the live meter. Kept separate from `AppState` so the
@@ -26,7 +40,7 @@ final class LevelMeterModel: ObservableObject {
     }
 }
 
-/// Owns the recording session: capture → chunked Whisper transcription → Claude notes.
+/// Owns the recording session: capture → chunked transcription → structured notes.
 @MainActor
 final class AppState: ObservableObject {
     enum Status: Equatable {
@@ -45,13 +59,31 @@ final class AppState: ObservableObject {
 
     /// What raised the current `warning`, so resolving one problem doesn't hide another.
     private enum WarningSource {
-        case missingAnthropicKey
+        case notesSetup
         case transcription
         case other
     }
 
-    typealias TranscriberFactory = (_ apiKey: String, _ language: String?) -> any TranscriptionServiceProtocol
-    typealias NoteGeneratorFactory = (_ apiKey: String, _ model: String) -> any NoteGeneratorServiceProtocol
+    typealias TranscriberFactory = (TranscriberConfiguration) -> any TranscriptionServiceProtocol
+    typealias NoteGeneratorFactory = (NoteGeneratorConfiguration) -> any NoteGeneratorServiceProtocol
+
+    nonisolated static func makeDefaultTranscriber(_ configuration: TranscriberConfiguration) -> any TranscriptionServiceProtocol {
+        switch configuration.engine {
+        case .appleOnDevice:
+            return AppleSpeechTranscriptionService(languageCode: configuration.language)
+        case .openAIWhisper:
+            return OpenAIWhisperTranscriptionService(apiKey: configuration.apiKey ?? "", language: configuration.language)
+        }
+    }
+
+    nonisolated static func makeDefaultNoteGenerator(_ configuration: NoteGeneratorConfiguration) -> any NoteGeneratorServiceProtocol {
+        switch configuration.engine {
+        case .appleIntelligence:
+            return AppleIntelligenceNoteGeneratorService()
+        case .claude:
+            return AnthropicNoteGeneratorService(apiKey: configuration.apiKey ?? "", model: configuration.model)
+        }
+    }
 
     @Published private(set) var status: Status = .idle
     /// Timestamped transcript accumulated over the whole lecture.
@@ -59,11 +91,14 @@ final class AppState: ObservableObject {
     @Published private(set) var notes = ""
     @Published private(set) var recordingStartedAt: Date?
     @Published private(set) var recordingEndedAt: Date?
-    /// Chunks currently being sent to Whisper.
+    /// Chunks currently being transcribed.
     @Published private(set) var pendingChunkCount = 0
+    /// Progress of multi-step note generation, e.g. "Summarizing part 2 of 5…".
+    @Published private(set) var notesProgress: String?
     /// Non-fatal problems worth showing without interrupting the recording.
     @Published private(set) var warning: String?
     @Published private(set) var needsScreenCapturePermission = false
+    @Published private(set) var needsSpeechPermission = false
     @Published private(set) var isStarting = false
 
     let levelMeter = LevelMeterModel()
@@ -74,6 +109,7 @@ final class AppState: ObservableObject {
     private let archive: SessionArchive?
     private let makeTranscriber: TranscriberFactory
     private let makeNoteGenerator: NoteGeneratorFactory
+    private let appleIntelligenceUnavailability: () -> String?
     private let logger = Logger(subsystem: "com.lecturemind.app", category: "AppState")
 
     private var transcriber: (any TranscriptionServiceProtocol)?
@@ -88,12 +124,9 @@ final class AppState: ObservableObject {
         keyStore: any APIKeyStore = KeychainStore(),
         defaults: UserDefaults = .standard,
         archive: SessionArchive? = SessionArchive(rootDirectory: SessionArchive.defaultRootDirectory),
-        makeTranscriber: @escaping TranscriberFactory = { apiKey, language in
-            OpenAIWhisperTranscriptionService(apiKey: apiKey, language: language)
-        },
-        makeNoteGenerator: @escaping NoteGeneratorFactory = { apiKey, model in
-            AnthropicNoteGeneratorService(apiKey: apiKey, model: model)
-        }
+        makeTranscriber: @escaping TranscriberFactory = AppState.makeDefaultTranscriber,
+        makeNoteGenerator: @escaping NoteGeneratorFactory = AppState.makeDefaultNoteGenerator,
+        appleIntelligenceUnavailability: @escaping () -> String? = AppleIntelligenceNoteGeneratorService.unavailabilityReason
     ) {
         self.capture = capture
         self.keyStore = keyStore
@@ -101,6 +134,7 @@ final class AppState: ObservableObject {
         self.archive = archive
         self.makeTranscriber = makeTranscriber
         self.makeNoteGenerator = makeNoteGenerator
+        self.appleIntelligenceUnavailability = appleIntelligenceUnavailability
         // Chunks from a session that crashed or was force-quit are no longer useful.
         capture.removeTemporaryFiles()
     }
@@ -128,6 +162,34 @@ final class AppState: ObservableObject {
         return value.isEmpty ? nil : value
     }
 
+    /// Free on-device engines are the default; the paid APIs are opt-in from Settings.
+    var transcriptionEngine: TranscriptionEngine {
+        defaults.string(forKey: SettingsKeys.transcriptionEngine).flatMap(TranscriptionEngine.init(rawValue:)) ?? .appleOnDevice
+    }
+
+    var noteEngine: NoteEngine {
+        defaults.string(forKey: SettingsKeys.noteEngine).flatMap(NoteEngine.init(rawValue:)) ?? .appleIntelligence
+    }
+
+    /// `nil` when the on-device notes model is ready, otherwise why it can't be used.
+    func appleIntelligenceStatus() -> String? {
+        appleIntelligenceUnavailability()
+    }
+
+    /// Why the selected note engine won't be able to run, if anything is missing.
+    private func notesSetupProblem() -> String? {
+        switch noteEngine {
+        case .claude:
+            return keyStore.apiKey(for: .anthropic) == nil
+                ? "Notes use Claude, but there's no Anthropic API key yet. Add it in Settings before you stop, or switch notes to Apple Intelligence."
+                : nil
+        case .appleIntelligence:
+            return appleIntelligenceUnavailability().map {
+                "Apple Intelligence can't write notes on this Mac: \($0) Switch notes to Claude in Settings before you stop."
+            }
+        }
+    }
+
     // MARK: Recording
 
     func toggleRecording() async {
@@ -142,9 +204,14 @@ final class AppState: ObservableObject {
         guard canStartRecording else { return }
         clearWarning()
 
-        guard let openAIKey = keyStore.apiKey(for: .openAI) else {
-            status = .error(APIError.missingAPIKey(service: OpenAIWhisperTranscriptionService.serviceName).localizedDescription)
-            return
+        let engine = transcriptionEngine
+        var openAIKey: String?
+        if engine == .openAIWhisper {
+            guard let key = keyStore.apiKey(for: .openAI) else {
+                status = .error(APIError.missingAPIKey(service: OpenAIWhisperTranscriptionService.serviceName).localizedDescription)
+                return
+            }
+            openAIKey = key
         }
         guard capture.hasScreenCapturePermission() else {
             // Shows the system prompt the first time; afterwards the user has to flip the
@@ -155,11 +222,24 @@ final class AppState: ObservableObject {
             return
         }
         needsScreenCapturePermission = false
+        needsSpeechPermission = false
 
         isStarting = true
         defer { isStarting = false }
         resetSession()
         status = .idle
+
+        // Permission prompts and model downloads happen before any audio is captured.
+        let transcriber = makeTranscriber(TranscriberConfiguration(engine: engine, apiKey: openAIKey, language: transcriptionLanguage))
+        do {
+            try await transcriber.prepare()
+        } catch {
+            if let speechError = error as? OnDeviceTranscriptionError, speechError == .permissionDenied {
+                needsSpeechPermission = true
+            }
+            status = .error(error.localizedDescription)
+            return
+        }
 
         let chunks: AsyncStream<AudioChunk>
         do {
@@ -177,14 +257,11 @@ final class AppState: ObservableObject {
             return
         }
 
-        transcriber = makeTranscriber(openAIKey, transcriptionLanguage)
+        self.transcriber = transcriber
         recordingStartedAt = Date()
         status = .recording
-        if keyStore.apiKey(for: .anthropic) == nil {
-            setWarning(
-                "No Anthropic API key yet. Add it in Settings before you stop, or the transcript won't be turned into notes.",
-                source: .missingAnthropicKey
-            )
+        if let problem = notesSetupProblem() {
+            setWarning(problem, source: .notesSetup)
         }
 
         // Chunks are transcribed one at a time, in order, while recording continues.
@@ -230,8 +307,13 @@ final class AppState: ObservableObject {
 
     func setAPIKey(_ value: String, for kind: APIKeyKind) throws {
         try keyStore.setAPIKey(value, for: kind)
-        if kind == .anthropic, keyStore.apiKey(for: .anthropic) != nil {
-            clearWarning(ifFrom: .missingAnthropicKey)
+        settingsDidChange()
+    }
+
+    /// Re-checks setup warnings after the user changes engines or keys.
+    func settingsDidChange() {
+        if notesSetupProblem() == nil {
+            clearWarning(ifFrom: .notesSetup)
         }
     }
 
@@ -308,6 +390,7 @@ final class AppState: ObservableObject {
         recordingStartedAt = nil
         recordingEndedAt = nil
         pendingChunkCount = 0
+        notesProgress = nil
         levelMeter.reset()
     }
 
@@ -406,30 +489,48 @@ final class AppState: ObservableObject {
     }
 
     private func generateNotes() async {
-        guard let anthropicKey = keyStore.apiKey(for: .anthropic) else {
-            status = .error("Anthropic API key is missing. Add it in Settings, then choose Regenerate Notes. Your transcript has been kept.")
-            return
+        let engine = noteEngine
+        var anthropicKey: String?
+        switch engine {
+        case .claude:
+            guard let key = keyStore.apiKey(for: .anthropic) else {
+                status = .error("Anthropic API key is missing. Add it in Settings (or switch notes to Apple Intelligence), then choose Regenerate Notes. Your transcript has been kept.")
+                return
+            }
+            anthropicKey = key
+        case .appleIntelligence:
+            if let reason = appleIntelligenceUnavailability() {
+                status = .error("\(OnDeviceNotesError.unavailable(reason).localizedDescription) Your transcript has been kept.")
+                return
+            }
         }
 
         status = .generatingNotes
         notes = ""
-        let generator = makeNoteGenerator(anthropicKey, claudeModel)
+        notesProgress = nil
+        defer { notesProgress = nil }
+        let generator = makeNoteGenerator(NoteGeneratorConfiguration(engine: engine, apiKey: anthropicKey, model: claudeModel))
         let request = NoteRequest(transcript: transcript, recordedAt: recordingStartedAt ?? Date(), duration: recordedDuration)
 
         var buffer = ""
         var lastPublished = Date.distantPast
         do {
-            for try await fragment in generator.generateNotes(for: request) {
-                buffer += fragment
-                // Publishing every token would re-render the preview dozens of times a second.
-                if Date().timeIntervalSince(lastPublished) >= 0.1 {
-                    notes = buffer
-                    lastPublished = Date()
+            for try await update in generator.generateNotes(for: request) {
+                switch update {
+                case .text(let fragment):
+                    buffer += fragment
+                    // Publishing every token would re-render the preview dozens of times a second.
+                    if Date().timeIntervalSince(lastPublished) >= 0.1 {
+                        notes = buffer
+                        lastPublished = Date()
+                    }
+                case .progress(let message):
+                    notesProgress = message
                 }
             }
             let finalNotes = buffer.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !finalNotes.isEmpty else {
-                throw APIError.emptyResult(service: AnthropicNoteGeneratorService.serviceName)
+                throw APIError.emptyResult(service: engine == .claude ? AnthropicNoteGeneratorService.serviceName : AppleIntelligenceNoteGeneratorService.serviceName)
             }
             notes = finalNotes
             if let archive, let recordingStartedAt {

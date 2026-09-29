@@ -165,11 +165,19 @@ actor FakeTranscriber: TranscriptionServiceProtocol {
 
     private var failuresRemaining: [String: Int]
     private let failure: Error
+    private let prepareError: Error?
     private(set) var calls: [Call] = []
+    private(set) var prepareCount = 0
 
-    init(failuresRemaining: [String: Int] = [:], failure: Error = TestError()) {
+    init(failuresRemaining: [String: Int] = [:], failure: Error = TestError(), prepareError: Error? = nil) {
         self.failuresRemaining = failuresRemaining
         self.failure = failure
+        self.prepareError = prepareError
+    }
+
+    func prepare() async throws {
+        prepareCount += 1
+        if let prepareError { throw prepareError }
     }
 
     func transcribe(audioFileURL: URL, prompt: String?) async throws -> String {
@@ -189,12 +197,16 @@ actor FakeTranscriber: TranscriptionServiceProtocol {
 
 final class FakeNoteGenerator: NoteGeneratorServiceProtocol, @unchecked Sendable {
     private let lock = NSLock()
-    private let fragments: [String]
+    private let updates: [NoteGenerationUpdate]
     private let failure: Error?
     private var recordedRequests: [NoteRequest] = []
 
     init(fragments: [String] = ["# Sorting Algorithms\n\n", "## Executive Summary\n", "Covered quicksort."], failure: Error? = nil) {
-        self.fragments = fragments
+        self.init(updates: fragments.map(NoteGenerationUpdate.text), failure: failure)
+    }
+
+    init(updates: [NoteGenerationUpdate], failure: Error? = nil) {
+        self.updates = updates
         self.failure = failure
     }
 
@@ -204,15 +216,15 @@ final class FakeNoteGenerator: NoteGeneratorServiceProtocol, @unchecked Sendable
         return recordedRequests
     }
 
-    func generateNotes(for request: NoteRequest) -> AsyncThrowingStream<String, Error> {
+    func generateNotes(for request: NoteRequest) -> AsyncThrowingStream<NoteGenerationUpdate, Error> {
         lock.lock()
         recordedRequests.append(request)
         lock.unlock()
-        let fragments = fragments
+        let updates = updates
         let failure = failure
         return AsyncThrowingStream { continuation in
-            for fragment in fragments {
-                continuation.yield(fragment)
+            for update in updates {
+                continuation.yield(update)
             }
             if let failure {
                 continuation.finish(throwing: failure)

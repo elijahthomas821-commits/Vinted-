@@ -26,6 +26,10 @@
 		BB0000000000000000000204 /* APIClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000204 /* APIClientTests.swift */; };
 		BB0000000000000000000205 /* AppStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000205 /* AppStateTests.swift */; };
 		BB0000000000000000000301 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000301 /* Assets.xcassets */; };
+		BB000000000000000000010E /* ChunkedNoteComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000010E /* ChunkedNoteComposer.swift */; };
+		BB000000000000000000010F /* AppleIntelligenceNoteGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000010F /* AppleIntelligenceNoteGenerator.swift */; };
+		BB0000000000000000000110 /* AppleSpeechTranscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000110 /* AppleSpeechTranscriptionService.swift */; };
+		BB0000000000000000000206 /* ChunkedNoteComposerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000206 /* ChunkedNoteComposerTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +65,10 @@
 		AA0000000000000000000204 /* APIClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClientTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000205 /* AppStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000301 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AA000000000000000000010E /* ChunkedNoteComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChunkedNoteComposer.swift; sourceTree = "<group>"; };
+		AA000000000000000000010F /* AppleIntelligenceNoteGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleIntelligenceNoteGenerator.swift; sourceTree = "<group>"; };
+		AA0000000000000000000110 /* AppleSpeechTranscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSpeechTranscriptionService.swift; sourceTree = "<group>"; };
+		AA0000000000000000000206 /* ChunkedNoteComposerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChunkedNoteComposerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +123,9 @@
 				AA000000000000000000010B /* MenuView.swift */,
 				AA000000000000000000010C /* MarkdownNotesView.swift */,
 				AA000000000000000000010D /* SettingsView.swift */,
+				AA000000000000000000010E /* ChunkedNoteComposer.swift */,
+				AA000000000000000000010F /* AppleIntelligenceNoteGenerator.swift */,
+				AA0000000000000000000110 /* AppleSpeechTranscriptionService.swift */,
 				AA0000000000000000000301 /* Assets.xcassets */,
 				AA0000000000000000000120 /* Info.plist */,
 			);
@@ -129,6 +140,7 @@
 				AA0000000000000000000203 /* FormattingTests.swift */,
 				AA0000000000000000000204 /* APIClientTests.swift */,
 				AA0000000000000000000205 /* AppStateTests.swift */,
+				AA0000000000000000000206 /* ChunkedNoteComposerTests.swift */,
 			);
 			path = LectureMindTests;
 			sourceTree = "<group>";
@@ -245,6 +257,9 @@
 				BB000000000000000000010B /* MenuView.swift in Sources */,
 				BB000000000000000000010C /* MarkdownNotesView.swift in Sources */,
 				BB000000000000000000010D /* SettingsView.swift in Sources */,
+				BB000000000000000000010E /* ChunkedNoteComposer.swift in Sources */,
+				BB000000000000000000010F /* AppleIntelligenceNoteGenerator.swift in Sources */,
+				BB0000000000000000000110 /* AppleSpeechTranscriptionService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,6 +272,7 @@
 				BB0000000000000000000203 /* FormattingTests.swift in Sources */,
 				BB0000000000000000000204 /* APIClientTests.swift in Sources */,
 				BB0000000000000000000205 /* AppStateTests.swift in Sources */,
+				BB0000000000000000000206 /* ChunkedNoteComposerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

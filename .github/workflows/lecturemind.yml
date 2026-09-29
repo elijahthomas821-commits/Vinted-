@@ -47,7 +47,9 @@ jobs:
   package:
     name: Package LectureMind.app
     needs: build-and-test
-    runs-on: macos-15
+    # Xcode 26's macOS 26 SDK is required to compile the free on-device engines
+    # (Foundation Models and SpeechTranscriber) into the app; it still runs on macOS 14+.
+    runs-on: macos-26
     timeout-minutes: 30
     defaults:
       run:
@@ -55,6 +57,9 @@ jobs:
         working-directory: LectureMind
     steps:
       - uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: xcodebuild -version
 
       - name: Build universal Release app
         run: |
@@ -71,13 +76,17 @@ jobs:
           lipo "$APP/Contents/MacOS/LectureMind" -verify_arch arm64 x86_64
           codesign --verify --deep --strict --verbose=2 "$APP"
           codesign -dv "$APP" 2>&1 | grep -E "Signature|flags"
-          for key in CFBundleShortVersionString CFBundleVersion LSUIElement LSMinimumSystemVersion NSScreenCaptureUsageDescription CFBundleIconName; do
+          for key in CFBundleShortVersionString CFBundleVersion LSUIElement LSMinimumSystemVersion NSScreenCaptureUsageDescription NSSpeechRecognitionUsageDescription CFBundleIconName; do
             echo "$key: $(/usr/libexec/PlistBuddy -c "Print :$key" "$APP/Contents/Info.plist")"
           done
           # The app icon must be compiled into the bundle and referenced from Info.plist.
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIconName' "$APP/Contents/Info.plist")" = AppIcon
           test -s "$APP/Contents/Resources/AppIcon.icns"
           test -s "$APP/Contents/Resources/Assets.car"
+          # Requesting speech recognition without this key crashes the app.
+          /usr/libexec/PlistBuddy -c 'Print :NSSpeechRecognitionUsageDescription' "$APP/Contents/Info.plist" > /dev/null
+          # The free notes engine must be compiled in, not stubbed out.
+          otool -L "$APP/Contents/MacOS/LectureMind" | grep FoundationModels
           ls -la "$APP/Contents/Resources"
 
       - name: Zip app
@@ -90,9 +99,39 @@ jobs:
           path: LectureMind/LectureMind.zip
           if-no-files-found: error
 
+  launch-test:
+    name: Launch packaged app (${{ matrix.os }})
+    needs: package
+    strategy:
+      fail-fast: false
+      matrix:
+        # The app is built with the macOS 26 SDK; make sure it still starts on older systems.
+        os: [macos-14, macos-15, macos-26]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: LectureMind-app
+
+      - name: Launch and confirm it keeps running
+        shell: bash
+        run: |
+          ditto -x -k LectureMind.zip .
+          ./LectureMind.app/Contents/MacOS/LectureMind > app.log 2>&1 &
+          pid=$!
+          sleep 8
+          if ! kill -0 "$pid" 2>/dev/null; then
+            echo "LectureMind exited during launch on macOS $(sw_vers -productVersion):"
+            cat app.log
+            exit 1
+          fi
+          kill "$pid"
+          echo "LectureMind launched and kept running on macOS $(sw_vers -productVersion)"
+
   publish:
     name: Publish download
-    needs: package
+    needs: [package, launch-test]
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     permissions:

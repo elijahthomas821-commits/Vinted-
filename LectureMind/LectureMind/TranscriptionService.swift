@@ -5,9 +5,32 @@ import FoundationNetworking
 
 /// Converts a recorded audio file into text.
 protocol TranscriptionServiceProtocol: Sendable {
+    /// One-time setup before recording starts, such as asking for permission or downloading a
+    /// speech model. Errors here stop the recording from starting.
+    func prepare() async throws
+
     /// Transcribes one audio file. `prompt` carries the tail of the preceding transcript so
     /// spelling and terminology stay consistent across chunk boundaries.
     func transcribe(audioFileURL: URL, prompt: String?) async throws -> String
+}
+
+extension TranscriptionServiceProtocol {
+    func prepare() async throws {}
+}
+
+/// Which speech-to-text engine transcribes the recording.
+enum TranscriptionEngine: String, CaseIterable, Identifiable, Sendable {
+    case appleOnDevice
+    case openAIWhisper
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .appleOnDevice: return "Apple on-device (free)"
+        case .openAIWhisper: return "OpenAI Whisper (API key)"
+        }
+    }
 }
 
 enum TranscriptionError: LocalizedError, Equatable {
@@ -133,6 +156,11 @@ struct LocalWhisperKitTranscriptionService: TranscriptionServiceProtocol {
 struct FallbackTranscriptionService: TranscriptionServiceProtocol {
     let primary: any TranscriptionServiceProtocol
     let fallback: any TranscriptionServiceProtocol
+
+    func prepare() async throws {
+        try await primary.prepare()
+        try? await fallback.prepare()
+    }
 
     func transcribe(audioFileURL: URL, prompt: String?) async throws -> String {
         do {

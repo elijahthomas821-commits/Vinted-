@@ -141,8 +141,8 @@ final class APIClientTests: XCTestCase {
         let request = NoteRequest(transcript: "[00:00] Welcome to thermodynamics.", recordedAt: Date(), duration: 3_600)
 
         var notes = ""
-        for try await fragment in service.generateNotes(for: request) {
-            notes += fragment
+        for try await update in service.generateNotes(for: request) {
+            if case .text(let fragment) = update { notes += fragment }
         }
 
         XCTAssertEqual(notes, "# Thermodynamics\n\n## Executive Summary\nEnergy is conserved.")
@@ -197,8 +197,8 @@ final class APIClientTests: XCTestCase {
         )
 
         var notes = ""
-        for try await fragment in service.generateNotes(for: Self.sampleRequest) {
-            notes += fragment
+        for try await update in service.generateNotes(for: Self.sampleRequest) {
+            if case .text(let fragment) = update { notes += fragment }
         }
 
         XCTAssertTrue(notes.hasPrefix("# Thermodynamics"))
@@ -235,8 +235,8 @@ final class APIClientTests: XCTestCase {
 
         var received = ""
         do {
-            for try await fragment in service.generateNotes(for: Self.sampleRequest) {
-                received += fragment
+            for try await update in service.generateNotes(for: Self.sampleRequest) {
+                if case .text(let fragment) = update { received += fragment }
             }
             XCTFail("Expected an error")
         } catch {
