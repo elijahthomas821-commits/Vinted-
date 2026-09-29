@@ -1,0 +1,468 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BB0000000000000000000101 /* LectureMindApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000101 /* LectureMindApp.swift */; };
+		BB0000000000000000000102 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000102 /* AppState.swift */; };
+		BB0000000000000000000103 /* AudioCaptureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000103 /* AudioCaptureManager.swift */; };
+		BB0000000000000000000104 /* AudioProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000104 /* AudioProcessing.swift */; };
+		BB0000000000000000000105 /* TranscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000105 /* TranscriptionService.swift */; };
+		BB0000000000000000000106 /* NoteGeneratorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000106 /* NoteGeneratorService.swift */; };
+		BB0000000000000000000107 /* APIClientSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000107 /* APIClientSupport.swift */; };
+		BB0000000000000000000108 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000108 /* KeychainStore.swift */; };
+		BB0000000000000000000109 /* Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000109 /* Formatting.swift */; };
+		BB000000000000000000010A /* SessionArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000010A /* SessionArchive.swift */; };
+		BB000000000000000000010B /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000010B /* MenuView.swift */; };
+		BB000000000000000000010C /* MarkdownNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000010C /* MarkdownNotesView.swift */; };
+		BB000000000000000000010D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000010D /* SettingsView.swift */; };
+		BB0000000000000000000201 /* TestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000201 /* TestSupport.swift */; };
+		BB0000000000000000000202 /* AudioProcessingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000202 /* AudioProcessingTests.swift */; };
+		BB0000000000000000000203 /* FormattingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000203 /* FormattingTests.swift */; };
+		BB0000000000000000000204 /* APIClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000204 /* APIClientTests.swift */; };
+		BB0000000000000000000205 /* AppStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000205 /* AppStateTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FF0000000000000000000031 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FF0000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DD0000000000000000000001;
+			remoteInfo = LectureMind;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		AA0000000000000000000001 /* LectureMind.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LectureMind.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA0000000000000000000002 /* LectureMindTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LectureMindTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA0000000000000000000101 /* LectureMindApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LectureMindApp.swift; sourceTree = "<group>"; };
+		AA0000000000000000000102 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		AA0000000000000000000103 /* AudioCaptureManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCaptureManager.swift; sourceTree = "<group>"; };
+		AA0000000000000000000104 /* AudioProcessing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioProcessing.swift; sourceTree = "<group>"; };
+		AA0000000000000000000105 /* TranscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionService.swift; sourceTree = "<group>"; };
+		AA0000000000000000000106 /* NoteGeneratorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteGeneratorService.swift; sourceTree = "<group>"; };
+		AA0000000000000000000107 /* APIClientSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClientSupport.swift; sourceTree = "<group>"; };
+		AA0000000000000000000108 /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
+		AA0000000000000000000109 /* Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatting.swift; sourceTree = "<group>"; };
+		AA000000000000000000010A /* SessionArchive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionArchive.swift; sourceTree = "<group>"; };
+		AA000000000000000000010B /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		AA000000000000000000010C /* MarkdownNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownNotesView.swift; sourceTree = "<group>"; };
+		AA000000000000000000010D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000120 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AA0000000000000000000201 /* TestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSupport.swift; sourceTree = "<group>"; };
+		AA0000000000000000000202 /* AudioProcessingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioProcessingTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000203 /* FormattingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormattingTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000204 /* APIClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClientTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000205 /* AppStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EE0000000000000000000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EE0000000000000000000012 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CC0000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				CC0000000000000000000003 /* LectureMind */,
+				CC0000000000000000000004 /* LectureMindTests */,
+				CC0000000000000000000002 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CC0000000000000000000002 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000001 /* LectureMind.app */,
+				AA0000000000000000000002 /* LectureMindTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CC0000000000000000000003 /* LectureMind */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000101 /* LectureMindApp.swift */,
+				AA0000000000000000000102 /* AppState.swift */,
+				AA0000000000000000000103 /* AudioCaptureManager.swift */,
+				AA0000000000000000000104 /* AudioProcessing.swift */,
+				AA0000000000000000000105 /* TranscriptionService.swift */,
+				AA0000000000000000000106 /* NoteGeneratorService.swift */,
+				AA0000000000000000000107 /* APIClientSupport.swift */,
+				AA0000000000000000000108 /* KeychainStore.swift */,
+				AA0000000000000000000109 /* Formatting.swift */,
+				AA000000000000000000010A /* SessionArchive.swift */,
+				AA000000000000000000010B /* MenuView.swift */,
+				AA000000000000000000010C /* MarkdownNotesView.swift */,
+				AA000000000000000000010D /* SettingsView.swift */,
+				AA0000000000000000000120 /* Info.plist */,
+			);
+			path = LectureMind;
+			sourceTree = "<group>";
+		};
+		CC0000000000000000000004 /* LectureMindTests */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000201 /* TestSupport.swift */,
+				AA0000000000000000000202 /* AudioProcessingTests.swift */,
+				AA0000000000000000000203 /* FormattingTests.swift */,
+				AA0000000000000000000204 /* APIClientTests.swift */,
+				AA0000000000000000000205 /* AppStateTests.swift */,
+			);
+			path = LectureMindTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DD0000000000000000000001 /* LectureMind */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FF0000000000000000000012 /* Build configuration list for PBXNativeTarget "LectureMind" */;
+			buildPhases = (
+				EE0000000000000000000001 /* Sources */,
+				EE0000000000000000000002 /* Frameworks */,
+				EE0000000000000000000003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LectureMind;
+			productName = LectureMind;
+			productReference = AA0000000000000000000001 /* LectureMind.app */;
+			productType = "com.apple.product-type.application";
+		};
+		DD0000000000000000000002 /* LectureMindTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FF0000000000000000000013 /* Build configuration list for PBXNativeTarget "LectureMindTests" */;
+			buildPhases = (
+				EE0000000000000000000011 /* Sources */,
+				EE0000000000000000000012 /* Frameworks */,
+				EE0000000000000000000013 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FF0000000000000000000032 /* PBXTargetDependency */,
+			);
+			name = LectureMindTests;
+			productName = LectureMindTests;
+			productReference = AA0000000000000000000002 /* LectureMindTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FF0000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					DD0000000000000000000001 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+					DD0000000000000000000002 = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = DD0000000000000000000001;
+					};
+				};
+			};
+			buildConfigurationList = FF0000000000000000000011 /* Build configuration list for PBXProject "LectureMind" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CC0000000000000000000001;
+			productRefGroup = CC0000000000000000000002 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DD0000000000000000000001 /* LectureMind */,
+				DD0000000000000000000002 /* LectureMindTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EE0000000000000000000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EE0000000000000000000013 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EE0000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BB0000000000000000000101 /* LectureMindApp.swift in Sources */,
+				BB0000000000000000000102 /* AppState.swift in Sources */,
+				BB0000000000000000000103 /* AudioCaptureManager.swift in Sources */,
+				BB0000000000000000000104 /* AudioProcessing.swift in Sources */,
+				BB0000000000000000000105 /* TranscriptionService.swift in Sources */,
+				BB0000000000000000000106 /* NoteGeneratorService.swift in Sources */,
+				BB0000000000000000000107 /* APIClientSupport.swift in Sources */,
+				BB0000000000000000000108 /* KeychainStore.swift in Sources */,
+				BB0000000000000000000109 /* Formatting.swift in Sources */,
+				BB000000000000000000010A /* SessionArchive.swift in Sources */,
+				BB000000000000000000010B /* MenuView.swift in Sources */,
+				BB000000000000000000010C /* MarkdownNotesView.swift in Sources */,
+				BB000000000000000000010D /* SettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EE0000000000000000000011 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BB0000000000000000000201 /* TestSupport.swift in Sources */,
+				BB0000000000000000000202 /* AudioProcessingTests.swift in Sources */,
+				BB0000000000000000000203 /* FormattingTests.swift in Sources */,
+				BB0000000000000000000204 /* APIClientTests.swift in Sources */,
+				BB0000000000000000000205 /* AppStateTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FF0000000000000000000032 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DD0000000000000000000001 /* LectureMind */;
+			targetProxy = FF0000000000000000000031 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		FF0000000000000000000021 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		FF0000000000000000000022 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		FF0000000000000000000023 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LectureMind/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lecturemind.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		FF0000000000000000000024 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LectureMind/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lecturemind.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		FF0000000000000000000025 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lecturemind.appTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LectureMind.app/Contents/MacOS/LectureMind";
+			};
+			name = Debug;
+		};
+		FF0000000000000000000026 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lecturemind.appTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LectureMind.app/Contents/MacOS/LectureMind";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FF0000000000000000000011 /* Build configuration list for PBXProject "LectureMind" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FF0000000000000000000021 /* Debug */,
+				FF0000000000000000000022 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FF0000000000000000000012 /* Build configuration list for PBXNativeTarget "LectureMind" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FF0000000000000000000023 /* Debug */,
+				FF0000000000000000000024 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FF0000000000000000000013 /* Build configuration list for PBXNativeTarget "LectureMindTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FF0000000000000000000025 /* Debug */,
+				FF0000000000000000000026 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FF0000000000000000000001 /* Project object */;
+}

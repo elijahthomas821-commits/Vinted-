@@ -1,0 +1,45 @@
+name: LectureMind
+
+on:
+  push:
+    paths:
+      - "LectureMind/**"
+      - ".github/workflows/lecturemind.yml"
+  pull_request:
+    paths:
+      - "LectureMind/**"
+      - ".github/workflows/lecturemind.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build & test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        # Oldest supported toolchain (Xcode 15.x on macos-14) through the newest image.
+        # Add macos-27 once GitHub offers it: an unknown label queues forever instead of failing.
+        os: [macos-14, macos-15, macos-26]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+        working-directory: LectureMind
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: xcodebuild -version && swift --version
+
+      - name: Build (Debug)
+        run: |
+          xcodebuild -scheme LectureMind -configuration Debug build 2>&1 | tee build.log
+          echo "Swift warnings in LectureMind sources:"
+          grep -E "LectureMind/[A-Za-z]+\.swift:[0-9]+:[0-9]+: warning" build.log | sort -u || echo "none"
+
+      - name: Unit tests
+        run: xcodebuild -scheme LectureMind -configuration Debug -destination 'platform=macOS' test
