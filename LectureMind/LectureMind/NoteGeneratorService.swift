@@ -10,10 +10,33 @@ struct NoteRequest: Sendable, Equatable {
     let duration: TimeInterval
 }
 
+/// One step of note generation.
+enum NoteGenerationUpdate: Equatable, Sendable {
+    /// Markdown to append to the notes.
+    case text(String)
+    /// A human-readable status line, e.g. "Summarizing part 2 of 5…".
+    case progress(String)
+}
+
+/// Which model writes the notes.
+enum NoteEngine: String, CaseIterable, Identifiable, Sendable {
+    case appleIntelligence
+    case claude
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .appleIntelligence: return "Apple Intelligence (free)"
+        case .claude: return "Claude (API key)"
+        }
+    }
+}
+
 /// Turns a raw lecture transcript into structured Markdown notes.
 protocol NoteGeneratorServiceProtocol: Sendable {
-    /// Streams the Markdown notes as incremental text fragments.
-    func generateNotes(for request: NoteRequest) -> AsyncThrowingStream<String, Error>
+    /// Streams the Markdown notes as incremental text fragments, interleaved with progress.
+    func generateNotes(for request: NoteRequest) -> AsyncThrowingStream<NoteGenerationUpdate, Error>
 }
 
 enum NotePrompt {
@@ -87,11 +110,11 @@ struct AnthropicNoteGeneratorService: NoteGeneratorServiceProtocol {
     var session: URLSession = .shared
     var retryPolicy = RetryPolicy()
 
-    func generateNotes(for request: NoteRequest) -> AsyncThrowingStream<String, Error> {
+    func generateNotes(for request: NoteRequest) -> AsyncThrowingStream<NoteGenerationUpdate, Error> {
         AsyncThrowingStream { continuation in
             let task = Task {
                 do {
-                    try await streamNotes(for: request) { continuation.yield($0) }
+                    try await streamNotes(for: request) { continuation.yield(.text($0)) }
                     continuation.finish()
                 } catch {
                     continuation.finish(throwing: error)

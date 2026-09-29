@@ -30,6 +30,8 @@
 	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>LectureMind requires microphone access if you wish to record your own voice during lectures.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>LectureMind uses Apple speech recognition to transcribe lecture audio for free, on your Mac.</string>
 	<key>NSScreenCaptureUsageDescription</key>
 	<string>LectureMind requires access to system audio to capture and transcribe lecture audio played through your speakers.</string>
 </dict>

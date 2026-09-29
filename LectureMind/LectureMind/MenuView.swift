@@ -90,7 +90,10 @@ struct MenuView: View {
                 if appState.needsScreenCapturePermission {
                     Button("Open Privacy Settings") { SystemSettings.openScreenRecordingPrivacy() }
                 }
-                if message.localizedCaseInsensitiveContains("API key") {
+                if appState.needsSpeechPermission {
+                    Button("Open Speech Recognition Settings") { SystemSettings.openSpeechRecognitionPrivacy() }
+                }
+                if message.contains(" in Settings") {
                     Button("Open Settings") { isShowingSettings = true }
                 }
                 if appState.canRegenerateNotes {
@@ -144,7 +147,7 @@ struct MenuView: View {
         case .notes:
             if appState.notes.isEmpty {
                 placeholder(appState.status == .generatingNotes
-                    ? "Claude is reading the transcript…"
+                    ? (appState.notesProgress ?? "Writing notes…")
                     : "Structured notes appear here after you stop recording.")
             } else {
                 MarkdownNotesView(markdown: appState.notes)
@@ -276,7 +279,8 @@ private struct StatusCard: View {
         case .transcribing:
             return "Transcribing the last segments…"
         case .generatingNotes:
-            return "Claude is structuring your notes…"
+            return appState.notesProgress
+                ?? (appState.noteEngine == .claude ? "Claude is structuring your notes…" : "Apple Intelligence is writing your notes…")
         case .completed:
             return "Copy or export your notes below."
         case .error:
@@ -380,7 +384,15 @@ extension AppState.Status {
 
 enum SystemSettings {
     static func openScreenRecordingPrivacy() {
-        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture") {
+        open("x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture")
+    }
+
+    static func openSpeechRecognitionPrivacy() {
+        open("x-apple.systempreferences:com.apple.preference.security?Privacy_SpeechRecognition")
+    }
+
+    private static func open(_ address: String) {
+        if let url = URL(string: address) {
             NSWorkspace.shared.open(url)
         }
     }
