@@ -16,9 +16,20 @@ into structured Markdown notes with Anthropic Claude.
 
 ## Requirements
 
-- macOS 14 Sonoma or later
-- Xcode 15.4 or later
+- macOS 14 Sonoma or later, on Apple Silicon or Intel
 - An OpenAI API key (Whisper transcription) and an Anthropic API key (note generation)
+- Xcode 15.4 or later, only if you build from source
+
+## Download
+
+**[Download LectureMind.zip](https://github.com/elijahthomas821-commits/Vinted-/releases/download/lecturemind-latest/LectureMind.zip)**
+is the latest build of `main`. CI rebuilds it after every change that passes the tests.
+
+1. Unzip it and drag `LectureMind.app` into Applications.
+2. Open it. The app isn't signed with an Apple Developer ID, so macOS says it can't verify the
+   developer. Go to **System Settings › Privacy & Security**, scroll down, and click
+   **Open Anyway**. Alternatively, run `xattr -dr com.apple.quarantine /Applications/LectureMind.app`.
+3. Continue with the first-launch steps below.
 
 ## Build & run
 
