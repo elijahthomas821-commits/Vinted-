@@ -43,3 +43,83 @@ jobs:
 
       - name: Unit tests
         run: xcodebuild -scheme LectureMind -configuration Debug -destination 'platform=macOS' test
+
+  package:
+    name: Package LectureMind.app
+    needs: build-and-test
+    runs-on: macos-15
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+        working-directory: LectureMind
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build universal Release app
+        run: |
+          xcodebuild -scheme LectureMind -configuration Release \
+            -destination 'generic/platform=macOS' \
+            -derivedDataPath build \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }} \
+            build
+
+      - name: Verify app bundle
+        run: |
+          APP=build/Build/Products/Release/LectureMind.app
+          echo "Architectures: $(lipo -archs "$APP/Contents/MacOS/LectureMind")"
+          lipo "$APP/Contents/MacOS/LectureMind" -verify_arch arm64 x86_64
+          codesign --verify --deep --strict --verbose=2 "$APP"
+          codesign -dv "$APP" 2>&1 | grep -E "Signature|flags"
+          for key in CFBundleShortVersionString CFBundleVersion LSUIElement LSMinimumSystemVersion NSScreenCaptureUsageDescription; do
+            echo "$key: $(/usr/libexec/PlistBuddy -c "Print :$key" "$APP/Contents/Info.plist")"
+          done
+
+      - name: Zip app
+        # ditto keeps the code signature and bundle metadata intact.
+        run: ditto -c -k --sequesterRsrc --keepParent build/Build/Products/Release/LectureMind.app LectureMind.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LectureMind-app
+          path: LectureMind/LectureMind.zip
+          if-no-files-found: error
+
+  publish:
+    name: Publish download
+    needs: package
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: lecturemind-release
+      cancel-in-progress: false
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: LectureMind-app
+
+      - name: Replace the "lecturemind-latest" release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          cat > notes.md <<'NOTES'
+          Latest LectureMind build from `main` (universal: Apple Silicon and Intel, macOS 14 or later).
+
+          **Install**
+          1. Download `LectureMind.zip` below and double-click it to unzip.
+          2. Drag `LectureMind.app` into your Applications folder.
+          3. Open it. macOS will say it can't verify the developer, because the app isn't signed with an Apple Developer ID. Go to System Settings > Privacy & Security, scroll down, and click **Open Anyway** next to LectureMind. (Or run `xattr -dr com.apple.quarantine /Applications/LectureMind.app` in Terminal.)
+          4. Click the brain icon in the menu bar, open Settings (gear), and save your OpenAI and Anthropic API keys.
+          5. Click **Start Recording**, allow **Screen & System Audio Recording** in System Settings, then quit and reopen LectureMind.
+
+          Each new build is a new signature, so macOS may ask for the recording permission again after you update.
+          NOTES
+          gh release delete lecturemind-latest --cleanup-tag --yes || true
+          gh release create lecturemind-latest LectureMind.zip \
+            --target "$GITHUB_SHA" \
+            --title "LectureMind (latest build)" \
+            --notes-file notes.md \
+            --latest
